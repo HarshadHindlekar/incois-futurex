@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,11 +30,14 @@ export function MapContainer({
 }: MapContainerProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
-  const markersRef = useRef<maplibregl.Marker[]>([]);
+  const popupRef = useRef<maplibregl.Popup | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [is3D, setIs3D] = useState(true);
   const [pitch, setPitch] = useState(50);
   const [showPFZ, setShowPFZ] = useState(true);
+
+  const PFZ_SOURCE_ID = "pfz-zones";
+  const PFZ_LAYER_ID = "pfz-zones-layer";
 
   // Initialize map
   useEffect(() => {
@@ -56,75 +59,155 @@ export function MapContainer({
     );
 
     map.current.on("load", () => {
-      setMapReady(true);
-    });
+      popupRef.current = new maplibregl.Popup({
+        offset: 18,
+        closeButton: true,
+        closeOnClick: true,
+        className: "pfz-popup",
+      });
 
-    return () => {
-      markersRef.current.forEach((m) => m.remove());
-      markersRef.current = [];
-      map.current?.remove();
-      map.current = null;
-    };
-  }, []);
+      // Native (3D-friendly) PFZ source + layer
+      map.current?.addSource(PFZ_SOURCE_ID, {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: [],
+        },
+      });
 
-  // Add/update PFZ markers
-  useEffect(() => {
-    if (!map.current || !mapReady) return;
+      map.current?.addLayer({
+        id: PFZ_LAYER_ID,
+        type: "circle",
+        source: PFZ_SOURCE_ID,
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 5, 8, 8, 12, 11],
+          "circle-color": "#00a3ff",
+          "circle-opacity": 0.95,
+          "circle-stroke-color": "#ffffff",
+          "circle-stroke-width": 2,
+          "circle-blur": 0.15,
+        },
+      });
 
-    // Clear existing markers
-    markersRef.current.forEach((m) => m.remove());
-    markersRef.current = [];
+      map.current?.on("mouseenter", PFZ_LAYER_ID, () => {
+        if (!map.current) return;
+        map.current.getCanvas().style.cursor = "pointer";
+      });
 
-    if (!showPFZ) return;
+      map.current?.on("mouseleave", PFZ_LAYER_ID, () => {
+        if (!map.current) return;
+        map.current.getCanvas().style.cursor = "";
+        popupRef.current?.remove();
+      });
 
-    pfzData.forEach((advisory) => {
-      advisory.zones.forEach((zone) => {
-        // Create custom marker element
-        const el = document.createElement("div");
-        el.style.cssText = `
-          width: 28px;
-          height: 28px;
-          background: linear-gradient(135deg, #0066cc 0%, #00a3ff 100%);
-          border-radius: 50%;
-          border: 3px solid white;
-          box-shadow: 0 4px 12px rgba(0,102,204,0.4);
-          cursor: pointer;
-          transition: transform 0.2s ease;
-        `;
-        el.onmouseenter = () => (el.style.transform = "scale(1.2)");
-        el.onmouseleave = () => (el.style.transform = "scale(1)");
+      map.current?.on("mousemove", PFZ_LAYER_ID, (e) => {
+        const popup = popupRef.current;
+        if (!popup || !map.current) return;
+        const f = e.features?.[0];
+        if (!f) return;
 
-        // Create popup
-        const popup = new maplibregl.Popup({
-          offset: 25,
-          closeButton: true,
-          className: "pfz-popup",
-        }).setHTML(`
+        const p = (f.properties ?? {}) as Record<string, unknown>;
+        const html = `
           <div style="padding: 12px; min-width: 180px; font-family: system-ui;">
             <h3 style="font-weight: 600; margin: 0 0 8px 0; color: #0066cc; font-size: 14px;">
               🐟 PFZ Zone
             </h3>
             <div style="font-size: 12px; color: #374151;">
-              <p style="margin: 4px 0;"><strong>Sector:</strong> ${advisory.sector.replace(/_/g, " ")}</p>
-              <p style="margin: 4px 0;"><strong>SST:</strong> ${(zone.sst ?? 0).toFixed(1)}°C</p>
-              <p style="margin: 4px 0;"><strong>Depth:</strong> ${zone.depth ?? 0}m</p>
-              <p style="margin: 4px 0;"><strong>Species:</strong> ${advisory.fishSpecies
-                .slice(0, 3)
-                .map((s) => s.name)
-                .join(", ")}</p>
+              <p style="margin: 4px 0;"><strong>Sector:</strong> ${String(p.sector ?? "")}</p>
+              <p style="margin: 4px 0;"><strong>SST:</strong> ${Number(p.sst ?? 0).toFixed(1)}°C</p>
+              <p style="margin: 4px 0;"><strong>Depth:</strong> ${Number(p.depth ?? 0)}m</p>
+              <p style="margin: 4px 0;"><strong>Species:</strong> ${String(p.species ?? "")}</p>
             </div>
           </div>
-        `);
+        `;
 
-        const marker = new maplibregl.Marker({ element: el })
-          .setLngLat([zone.coordinates.longitude, zone.coordinates.latitude])
-          .setPopup(popup)
-          .addTo(map.current!);
-
-        markersRef.current.push(marker);
+        if (e.lngLat) {
+          popup.remove();
+          popup.setLngLat(e.lngLat).setHTML(html).addTo(map.current);
+        }
       });
+
+      map.current?.on("click", PFZ_LAYER_ID, (e) => {
+        // Same as hover but click keeps popup visible (no map movement)
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
+
+        const popup = popupRef.current;
+        if (!popup || !map.current) return;
+        const f = e.features?.[0];
+        if (!f) return;
+
+        const p = (f.properties ?? {}) as Record<string, unknown>;
+        const html = `
+          <div style="padding: 12px; min-width: 180px; font-family: system-ui;">
+            <h3 style="font-weight: 600; margin: 0 0 8px 0; color: #0066cc; font-size: 14px;">
+              🐟 PFZ Zone
+            </h3>
+            <div style="font-size: 12px; color: #374151;">
+              <p style="margin: 4px 0;"><strong>Sector:</strong> ${String(p.sector ?? "")}</p>
+              <p style="margin: 4px 0;"><strong>SST:</strong> ${Number(p.sst ?? 0).toFixed(1)}°C</p>
+              <p style="margin: 4px 0;"><strong>Depth:</strong> ${Number(p.depth ?? 0)}m</p>
+              <p style="margin: 4px 0;"><strong>Species:</strong> ${String(p.species ?? "")}</p>
+            </div>
+          </div>
+        `;
+
+        if (e.lngLat) {
+          popup.remove();
+          popup.setLngLat(e.lngLat).setHTML(html).addTo(map.current);
+        }
+      });
+
+      setMapReady(true);
     });
-  }, [mapReady, pfzData, showPFZ]);
+
+    return () => {
+      popupRef.current?.remove();
+      popupRef.current = null;
+      map.current?.remove();
+      map.current = null;
+    };
+  }, []);
+
+  // Add/update PFZ source data
+  useEffect(() => {
+    if (!map.current || !mapReady) return;
+
+    const src = map.current.getSource(PFZ_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+    if (!src) return;
+
+    const features: GeoJSON.Feature<GeoJSON.Point, Record<string, unknown>>[] = [];
+    if (showPFZ) {
+      pfzData.forEach((advisory) => {
+        advisory.zones.forEach((zone) => {
+          features.push({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [zone.coordinates.longitude, zone.coordinates.latitude],
+            },
+            properties: {
+              sector: advisory.sector.replace(/_/g, " "),
+              sst: zone.sst ?? 0,
+              depth: zone.depth ?? 0,
+              species: advisory.fishSpecies
+                .slice(0, 3)
+                .map((s) => s.name)
+                .join(", "),
+            },
+          });
+        });
+      });
+    }
+
+    src.setData({
+      type: "FeatureCollection",
+      features,
+    });
+
+    map.current.setLayoutProperty(PFZ_LAYER_ID, "visibility", showPFZ ? "visible" : "none");
+    if (!showPFZ) popupRef.current?.remove();
+  }, [PFZ_LAYER_ID, PFZ_SOURCE_ID, mapReady, pfzData, showPFZ]);
 
   // Update pitch/3D mode
   useEffect(() => {
