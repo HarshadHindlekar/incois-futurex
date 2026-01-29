@@ -1,26 +1,196 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 :root {
+  /* INCOIS Design System - Light Mode */
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --foreground: #1f2937;
+  
+  /* Primary - Ocean Blue */
+  --primary: #0066cc;
+  --primary-foreground: #ffffff;
+  
+  /* Secondary */
+  --secondary: #f1f5f9;
+  --secondary-foreground: #1f2937;
+  
+  /* Accent - Coral Orange */
+  --accent: #ff6b35;
+  --accent-foreground: #ffffff;
+  
+  /* Muted */
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  
+  /* Card */
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+  
+  /* Popover */
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  
+  /* Border */
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0066cc;
+  
+  /* Alert Colors */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  
+  /* Radius */
+  --radius: 0.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* INCOIS Design System - Dark Mode */
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+    
+    --primary: #3b82f6;
+    --primary-foreground: #ffffff;
+    
+    --secondary: #1e293b;
+    --secondary-foreground: #f1f5f9;
+    
+    --accent: #ff6b35;
+    --accent-foreground: #ffffff;
+    
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    
+    --card: #1e293b;
+    --card-foreground: #f1f5f9;
+    
+    --popover: #1e293b;
+    --popover-foreground: #f1f5f9;
+    
+    --border: #334155;
+    --input: #334155;
+    --ring: #3b82f6;
+    
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
   }
+}
+
+@theme inline {
+  /* Base Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  
+  /* INCOIS Custom Colors */
+  --color-ocean-50: #e6f2ff;
+  --color-ocean-100: #cce5ff;
+  --color-ocean-200: #99ccff;
+  --color-ocean-300: #66b2ff;
+  --color-ocean-400: #3399ff;
+  --color-ocean-500: #0080ff;
+  --color-ocean-600: #0066cc;
+  --color-ocean-700: #004d99;
+  --color-ocean-800: #003366;
+  --color-ocean-900: #001a33;
+  
+  --color-coral-50: #fff4f0;
+  --color-coral-100: #ffe8e0;
+  --color-coral-200: #ffd1c2;
+  --color-coral-300: #ffb9a3;
+  --color-coral-400: #ff9270;
+  --color-coral-500: #ff6b35;
+  --color-coral-600: #e55a2b;
+  --color-coral-700: #cc4a21;
+  --color-coral-800: #993817;
+  --color-coral-900: #66260e;
+  
+  --color-sea-50: #e6fff9;
+  --color-sea-100: #ccfff3;
+  --color-sea-200: #99ffe7;
+  --color-sea-300: #66ffdb;
+  --color-sea-400: #33ffcf;
+  --color-sea-500: #00e6b3;
+  --color-sea-600: #00b38c;
+  --color-sea-700: #008066;
+  --color-sea-800: #004d3d;
+  --color-sea-900: #001a14;
+  
+  /* Fonts */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
+}
+
+* {
+  border-color: var(--border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Mapbox GL overrides for INCOIS theme */
+.mapboxgl-popup-content {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: var(--card);
+}
+
+.mapboxgl-ctrl-group {
+  background: var(--card);
+  border-radius: var(--radius);
+}
+
+.mapboxgl-ctrl-group button,
+.maplibregl-ctrl-group button {
+  background-color: transparent;
+}
+
+.mapboxgl-ctrl-group button:hover,
+.maplibregl-ctrl-group button:hover {
+  background-color: var(--muted);
+}
+
+/* Leaflet fixes */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;
+}
+
+.leaflet-tile-pane {
+  z-index: 1;
+}
+
+.leaflet-pane {
+  z-index: 1;
 }
