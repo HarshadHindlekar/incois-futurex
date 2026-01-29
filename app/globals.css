@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
+@import "maplibre-gl/dist/maplibre-gl.css";
 
 :root {
   /* INCOIS Design System - Light Mode */
@@ -180,17 +180,23 @@ body {
   background-color: var(--muted);
 }
 
-/* Leaflet fixes */
-.leaflet-container {
+/* MapLibre GL fixes */
+.maplibregl-map {
   width: 100% !important;
   height: 100% !important;
-  z-index: 1;
 }
 
-.leaflet-tile-pane {
-  z-index: 1;
+.maplibregl-canvas {
+  outline: none;
 }
 
-.leaflet-pane {
-  z-index: 1;
+.maplibregl-popup-content {
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.maplibregl-popup-close-button {
+  font-size: 18px;
+  padding: 4px 8px;
 }
