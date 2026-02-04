@@ -70,8 +70,8 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden border-b bg-gradient-to-br from-ocean-600 via-ocean-700 to-ocean-900 py-20 text-white">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-        <div className="container relative mx-auto px-4">
+        <div className="absolute inset-0 z-0 bg-[url('/grid.svg')] opacity-10" />
+        <div className="container relative z-10 mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
             <Badge className="mb-4 bg-white/20 text-white hover:bg-white/30">
               <Waves className="mr-1 h-3 w-3" />
@@ -104,7 +104,7 @@ export default function Home() {
         </div>
 
         {/* Decorative waves */}
-        <div className="absolute bottom-0 left-0 right-0">
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-0">
           <svg
             viewBox="0 0 1440 120"
             fill="none"
