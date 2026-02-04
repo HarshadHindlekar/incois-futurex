@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 
 const languages = [
   { code: "en", name: "English" },
@@ -53,9 +55,16 @@ interface HeaderProps {
 
 export function Header({ alertCount = 0 }: HeaderProps) {
   const pathname = usePathname();
-  const [currentLang, setCurrentLang] = useState("en");
+  const locale = useLocale();
+  const router = useRouter();
   const [isDark, setIsDark] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const setLanguage = (nextLocale: string) => {
+    if (nextLocale === locale) return;
+    document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    router.refresh();
+  };
 
   const toggleTheme = () => {
     setIsDark(!isDark);
@@ -109,8 +118,8 @@ export function Header({ alertCount = 0 }: HeaderProps) {
               {languages.map((lang) => (
                 <DropdownMenuItem
                   key={lang.code}
-                  onClick={() => setCurrentLang(lang.code)}
-                  className={currentLang === lang.code ? "bg-accent" : ""}
+                  onClick={() => setLanguage(lang.code)}
+                  className={locale === lang.code ? "bg-accent" : ""}
                 >
                   {lang.name}
                 </DropdownMenuItem>

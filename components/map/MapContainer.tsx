@@ -325,7 +325,7 @@ export function MapContainer({
       </div>
 
       {/* Quick Nav */}
-      <div className="absolute bottom-4 right-4 z-10">
+      <div className="absolute right-4 top-4 z-10">
         <Card className="max-h-48 overflow-auto p-2">
           <div className="mb-1 text-xs font-medium text-muted-foreground">Quick Nav</div>
           <div className="grid grid-cols-2 gap-1">
