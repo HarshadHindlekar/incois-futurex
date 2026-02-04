@@ -96,7 +96,12 @@
     "zoomIn": "Zoom In",
     "zoomOut": "Zoom Out",
     "fullscreen": "Fullscreen",
-    "resetView": "Reset View"
+    "resetView": "Reset View",
+    "threeDView": "3D View",
+    "enable3D": "Enable 3D",
+    "tilt": "Tilt",
+    "quickNav": "Quick Nav",
+    "rotate": "Rotate"
   },
   "sectors": {
     "GUJARAT": "Gujarat",
@@ -118,5 +123,63 @@
     "kilometers": "km",
     "knots": "knots",
     "mgPerCubicMeter": "mg/m³"
+  },
+  "home": {
+    "hero": {
+      "badge": "INCOIS Marine Fisheries Platform",
+      "title": "Empowering India's Fishing Community",
+      "subtitle": "Real-time ocean observations, Potential Fishing Zone advisories, and marine weather alerts for sustainable and safe fishing operations.",
+      "ctaPrimary": "Go to Dashboard",
+      "ctaSecondary": "View Map"
+    },
+    "featuresSection": {
+      "title": "Comprehensive Marine Data Platform",
+      "subtitle": "Access real-time ocean data, fishing advisories, and weather alerts designed for fishermen, researchers, and maritime professionals."
+    },
+    "features": {
+      "pfz": {
+        "title": "PFZ Advisories",
+        "description": "Real-time Potential Fishing Zone advisories for 12 coastal sectors"
+      },
+      "map": {
+        "title": "Interactive Maps",
+        "description": "Visualize fishing zones, SST, and chlorophyll data on interactive maps"
+      },
+      "alerts": {
+        "title": "Alert System",
+        "description": "Tsunami, storm surge, and marine weather warnings"
+      },
+      "ocean": {
+        "title": "Ocean Data",
+        "description": "Sea surface temperature, currents, and climate indices"
+      },
+      "language": {
+        "title": "Multi-language",
+        "description": "Available in Hindi, Telugu, Tamil, and 7 more Indian languages"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Historical trends and regional statistics dashboard"
+      }
+    },
+    "coverage": {
+      "title": "Complete Coastal Coverage",
+      "subtitle": "Serving all major fishing sectors across India's coastline"
+    },
+    "stats": {
+      "sectors": "Coastal Sectors",
+      "languages": "Indian Languages",
+      "updates": "Real-time Updates"
+    },
+    "cta": {
+      "eyebrow": "Safe Fishing Operations",
+      "title": "Start Using INCOIS Marine Platform",
+      "subtitle": "Access PFZ advisories, weather alerts, and ocean data today.",
+      "button": "Get Started"
+    },
+    "footer": {
+      "brand": "INCOIS Marine Fisheries",
+      "copyright": "Indian National Centre for Ocean Information Services"
+    }
   }
 }

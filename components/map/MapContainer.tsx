@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import maplibregl from "maplibre-gl";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ export function MapContainer({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
+  const t = useTranslations();
   const [mapReady, setMapReady] = useState(false);
   const [is3D, setIs3D] = useState(true);
   const [pitch, setPitch] = useState(50);
@@ -269,10 +271,10 @@ export function MapContainer({
         <Card className="p-3">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium">
             <Layers className="h-4 w-4" />
-            Layers
+            {t("map.layers")}
           </div>
           <div className="flex items-center justify-between gap-4">
-            <Label htmlFor="pfz-toggle" className="text-xs">PFZ Zones</Label>
+            <Label htmlFor="pfz-toggle" className="text-xs">{t("map.pfzLayer")}</Label>
             <Switch id="pfz-toggle" checked={showPFZ} onCheckedChange={setShowPFZ} />
           </div>
         </Card>
@@ -281,16 +283,18 @@ export function MapContainer({
         <Card className="p-3">
           <div className="mb-2 flex items-center gap-2 text-sm font-medium">
             <Mountain className="h-4 w-4" />
-            3D View
+            {t("map.threeDView")}
           </div>
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-4">
-              <Label htmlFor="3d-toggle" className="text-xs">Enable 3D</Label>
+              <Label htmlFor="3d-toggle" className="text-xs">{t("map.enable3D")}</Label>
               <Switch id="3d-toggle" checked={is3D} onCheckedChange={setIs3D} />
             </div>
             {is3D && (
               <div>
-                <Label className="text-xs text-muted-foreground">Tilt: {pitch}°</Label>
+                <Label className="text-xs text-muted-foreground">
+                  {t("map.tilt")}: {pitch}°
+                </Label>
                 <input
                   type="range"
                   min="0"
@@ -307,19 +311,19 @@ export function MapContainer({
 
       {/* Zoom/View Controls */}
       <div className="absolute bottom-4 left-4 z-10 flex flex-col gap-1">
-        <Button variant="secondary" size="icon" onClick={handleZoomIn}>
+        <Button variant="secondary" size="icon" onClick={handleZoomIn} title={t("map.zoomIn")}>
           <ZoomIn className="h-4 w-4" />
         </Button>
-        <Button variant="secondary" size="icon" onClick={handleZoomOut}>
+        <Button variant="secondary" size="icon" onClick={handleZoomOut} title={t("map.zoomOut")}>
           <ZoomOut className="h-4 w-4" />
         </Button>
-        <Button variant="secondary" size="icon" onClick={handleRotate} title="Rotate">
+        <Button variant="secondary" size="icon" onClick={handleRotate} title={t("map.rotate")}>
           <Compass className="h-4 w-4" />
         </Button>
-        <Button variant="secondary" size="icon" onClick={handleResetView}>
+        <Button variant="secondary" size="icon" onClick={handleResetView} title={t("map.resetView")}>
           <RotateCcw className="h-4 w-4" />
         </Button>
-        <Button variant="secondary" size="icon" onClick={handleFullscreen}>
+        <Button variant="secondary" size="icon" onClick={handleFullscreen} title={t("map.fullscreen")}>
           <Maximize className="h-4 w-4" />
         </Button>
       </div>
@@ -327,7 +331,7 @@ export function MapContainer({
       {/* Quick Nav */}
       <div className="absolute right-4 top-4 z-10">
         <Card className="max-h-48 overflow-auto p-2">
-          <div className="mb-1 text-xs font-medium text-muted-foreground">Quick Nav</div>
+          <div className="mb-1 text-xs font-medium text-muted-foreground">{t("map.quickNav")}</div>
           <div className="grid grid-cols-2 gap-1">
             {Object.keys(SECTOR_COORDINATES).slice(0, 8).map((sector) => (
               <Button

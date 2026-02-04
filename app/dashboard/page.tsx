@@ -11,8 +11,10 @@ import { usePFZAdvisories, usePFZStats } from "@/lib/hooks/usePFZData";
 import { useSSTData, useChlorophyllData, useObservationSummaries } from "@/lib/hooks/useObservations";
 import { useAlerts, useAlertStats } from "@/lib/hooks/useAlerts";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export default function DashboardPage() {
+  const t = useTranslations();
   const { advisories, isLoading: pfzLoading } = usePFZAdvisories();
   const { stats: pfzStats } = usePFZStats();
   const { sst, isLoading: sstLoading } = useSSTData();
@@ -26,9 +28,9 @@ export default function DashboardPage() {
       {/* Page Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Marine Fisheries Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t("dashboard.title")}</h1>
           <p className="text-muted-foreground">
-            Real-time ocean observations and fishing advisories
+            {t("dashboard.subtitle")}
           </p>
         </div>
         <div className="flex gap-2">
@@ -44,7 +46,7 @@ export default function DashboardPage() {
       {/* Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricsCard
-          title="Active PFZ Zones"
+          title={t("dashboard.activePFZ")}
           value={pfzStats.totalActive}
           unit="zones"
           change={12.5}
@@ -55,7 +57,7 @@ export default function DashboardPage() {
           isLoading={pfzLoading}
         />
         <MetricsCard
-          title="Ocean Temperature"
+          title={t("dashboard.oceanTemp")}
           value={sst.avg.toFixed(1)}
           unit="°C"
           change={sst.anomaly}
@@ -66,7 +68,7 @@ export default function DashboardPage() {
           isLoading={sstLoading}
         />
         <MetricsCard
-          title="Chlorophyll-a"
+          title={t("dashboard.chlorophyll")}
           value={chlorophyll.avg.toFixed(2)}
           unit="mg/m³"
           change={5.2}
@@ -77,7 +79,7 @@ export default function DashboardPage() {
           isLoading={chlorophyllLoading}
         />
         <MetricsCard
-          title="Active Alerts"
+          title={t("dashboard.activeAlerts")}
           value={alertStats.total}
           change={alertStats.critical > 0 ? alertStats.critical : undefined}
           changeType={alertStats.critical > 0 ? "increase" : "neutral"}
@@ -102,7 +104,7 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Recent Advisories</CardTitle>
+                <CardTitle className="text-lg">{t("dashboard.recentAdvisories")}</CardTitle>
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/advisories">View all</Link>
                 </Button>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,54 +17,33 @@ import {
 } from "lucide-react";
 
 const features = [
-  {
-    icon: Fish,
-    title: "PFZ Advisories",
-    description: "Real-time Potential Fishing Zone advisories for 12 coastal sectors",
-  },
-  {
-    icon: Map,
-    title: "Interactive Maps",
-    description: "Visualize fishing zones, SST, and chlorophyll data on interactive maps",
-  },
-  {
-    icon: Bell,
-    title: "Alert System",
-    description: "Tsunami, storm surge, and marine weather warnings",
-  },
-  {
-    icon: Thermometer,
-    title: "Ocean Data",
-    description: "Sea surface temperature, currents, and climate indices",
-  },
-  {
-    icon: Globe,
-    title: "Multi-language",
-    description: "Available in Hindi, Telugu, Tamil, and 7 more Indian languages",
-  },
-  {
-    icon: BarChart3,
-    title: "Analytics",
-    description: "Historical trends and regional statistics dashboard",
-  },
+  { icon: Fish, titleKey: "features.pfz.title", descriptionKey: "features.pfz.description" },
+  { icon: Map, titleKey: "features.map.title", descriptionKey: "features.map.description" },
+  { icon: Bell, titleKey: "features.alerts.title", descriptionKey: "features.alerts.description" },
+  { icon: Thermometer, titleKey: "features.ocean.title", descriptionKey: "features.ocean.description" },
+  { icon: Globe, titleKey: "features.language.title", descriptionKey: "features.language.description" },
+  { icon: BarChart3, titleKey: "features.analytics.title", descriptionKey: "features.analytics.description" },
 ];
 
 const sectors = [
-  "Gujarat",
-  "Maharashtra",
-  "Goa",
-  "Karnataka",
-  "Kerala",
-  "Tamil Nadu",
-  "Andhra Pradesh",
-  "Odisha",
-  "West Bengal",
-  "Andaman",
-  "Nicobar",
-  "Lakshadweep",
-];
+  "GUJARAT",
+  "MAHARASHTRA",
+  "GOA",
+  "KARNATAKA",
+  "KERALA",
+  "TAMIL_NADU",
+  "ANDHRA_PRADESH",
+  "ODISHA",
+  "WEST_BENGAL",
+  "ANDAMAN",
+  "NICOBAR",
+  "LAKSHADWEEP",
+] as const;
 
-export default function Home() {
+export default async function Home() {
+  const t = await getTranslations("home");
+  const tSectors = await getTranslations("sectors");
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -75,19 +55,18 @@ export default function Home() {
           <div className="mx-auto max-w-3xl text-center">
             <Badge className="mb-4 bg-white/20 text-white hover:bg-white/30">
               <Waves className="mr-1 h-3 w-3" />
-              INCOIS Marine Fisheries Platform
+              {t("hero.badge")}
             </Badge>
             <h1 className="mb-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-              Empowering India&apos;s Fishing Community
+              {t("hero.title")}
             </h1>
             <p className="mb-8 text-lg text-ocean-100 md:text-xl">
-              Real-time ocean observations, Potential Fishing Zone advisories, and
-              marine weather alerts for sustainable and safe fishing operations.
+              {t("hero.subtitle")}
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Button size="lg" className="bg-white text-ocean-700 hover:bg-ocean-50" asChild>
                 <Link href="/dashboard">
-                  Go to Dashboard
+                  {t("hero.ctaPrimary")}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -97,7 +76,7 @@ export default function Home() {
                 className="border-white/30 text-white hover:bg-white/10"
                 asChild
               >
-                <Link href="/map">View Map</Link>
+                <Link href="/map">{t("hero.ctaSecondary")}</Link>
               </Button>
             </div>
           </div>
@@ -125,11 +104,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight">
-              Comprehensive Marine Data Platform
+              {t("featuresSection.title")}
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
-              Access real-time ocean data, fishing advisories, and weather alerts
-              designed for fishermen, researchers, and maritime professionals.
+              {t("featuresSection.subtitle")}
             </p>
           </div>
 
@@ -140,8 +118,8 @@ export default function Home() {
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-ocean-100 text-ocean-600 dark:bg-ocean-900/30">
                     <feature.icon className="h-6 w-6" />
                   </div>
-                  <h3 className="mb-2 text-lg font-semibold">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                  <h3 className="mb-2 text-lg font-semibold">{t(feature.titleKey)}</h3>
+                  <p className="text-sm text-muted-foreground">{t(feature.descriptionKey)}</p>
                 </CardContent>
               </Card>
             ))}
@@ -154,10 +132,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight">
-              Complete Coastal Coverage
+              {t("coverage.title")}
             </h2>
             <p className="mx-auto max-w-2xl text-muted-foreground">
-              Serving all major fishing sectors across India&apos;s coastline
+              {t("coverage.subtitle")}
             </p>
           </div>
 
@@ -168,7 +146,7 @@ export default function Home() {
                 variant="secondary"
                 className="px-4 py-2 text-sm"
               >
-                {sector}
+                {tSectors(sector)}
               </Badge>
             ))}
           </div>
@@ -176,15 +154,15 @@ export default function Home() {
           <div className="mt-12 grid gap-8 md:grid-cols-3">
             <div className="text-center">
               <div className="text-4xl font-bold text-ocean-600">12+</div>
-              <div className="text-sm text-muted-foreground">Coastal Sectors</div>
+              <div className="text-sm text-muted-foreground">{t("stats.sectors")}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-ocean-600">10</div>
-              <div className="text-sm text-muted-foreground">Indian Languages</div>
+              <div className="text-sm text-muted-foreground">{t("stats.languages")}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-ocean-600">24/7</div>
-              <div className="text-sm text-muted-foreground">Real-time Updates</div>
+              <div className="text-sm text-muted-foreground">{t("stats.updates")}</div>
             </div>
           </div>
         </div>
@@ -199,13 +177,13 @@ export default function Home() {
                 <div>
                   <div className="mb-2 flex items-center gap-2">
                     <Shield className="h-6 w-6" />
-                    <span className="font-semibold">Safe Fishing Operations</span>
+                    <span className="font-semibold">{t("cta.eyebrow")}</span>
                   </div>
                   <h3 className="mb-2 text-2xl font-bold md:text-3xl">
-                    Start Using INCOIS Marine Platform
+                    {t("cta.title")}
                   </h3>
                   <p className="text-ocean-100">
-                    Access PFZ advisories, weather alerts, and ocean data today.
+                    {t("cta.subtitle")}
                   </p>
                 </div>
                 <Button
@@ -214,7 +192,7 @@ export default function Home() {
                   asChild
                 >
                   <Link href="/dashboard">
-                    Get Started
+                    {t("cta.button")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -232,10 +210,10 @@ export default function Home() {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ocean-600 text-white">
                 <Waves className="h-4 w-4" />
               </div>
-              <span className="font-semibold">INCOIS Marine Fisheries</span>
+              <span className="font-semibold">{t("footer.brand")}</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Indian National Centre for Ocean Information Services
+              © {new Date().getFullYear()} {t("footer.copyright")}
             </p>
           </div>
         </div>

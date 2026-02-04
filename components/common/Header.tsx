@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 const languages = [
@@ -43,10 +43,10 @@ const languages = [
 ];
 
 const navLinks = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/advisories", label: "Advisories" },
-  { href: "/map", label: "Map" },
-  { href: "/alerts", label: "Alerts" },
+  { href: "/dashboard", key: "dashboard" },
+  { href: "/advisories", key: "advisories" },
+  { href: "/map", key: "map" },
+  { href: "/alerts", key: "alerts" },
 ];
 
 interface HeaderProps {
@@ -55,6 +55,7 @@ interface HeaderProps {
 
 export function Header({ alertCount = 0 }: HeaderProps) {
   const pathname = usePathname();
+  const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
   const [isDark, setIsDark] = useState(false);
@@ -63,7 +64,7 @@ export function Header({ alertCount = 0 }: HeaderProps) {
   const setLanguage = (nextLocale: string) => {
     if (nextLocale === locale) return;
     document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
-    router.refresh();
+    window.location.reload();
   };
 
   const toggleTheme = () => {
@@ -98,7 +99,7 @@ export function Header({ alertCount = 0 }: HeaderProps) {
                   : "text-muted-foreground"
               )}
             >
-              {link.label}
+              {t(`nav.${link.key}`)}
             </Link>
           ))}
         </nav>
@@ -113,7 +114,7 @@ export function Header({ alertCount = 0 }: HeaderProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuLabel>Language</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("nav.language")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {languages.map((lang) => (
                 <DropdownMenuItem
@@ -205,7 +206,7 @@ export function Header({ alertCount = 0 }: HeaderProps) {
                     : "text-muted-foreground"
                 )}
               >
-                {link.label}
+                {t(`nav.${link.key}`)}
               </Link>
             ))}
           </nav>
