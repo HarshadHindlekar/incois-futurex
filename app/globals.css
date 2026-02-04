@@ -44,7 +44,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light) {
     /* INCOIS Design System - Dark Mode */
     --background: #0f172a;
     --foreground: #f1f5f9;
@@ -74,6 +74,68 @@
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
   }
+}
+
+:root.dark {
+  /* INCOIS Design System - Dark Mode (Class Toggle) */
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+
+  --secondary: #1e293b;
+  --secondary-foreground: #f1f5f9;
+
+  --accent: #ff6b35;
+  --accent-foreground: #ffffff;
+
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+
+  --border: #334155;
+  --input: #334155;
+  --ring: #3b82f6;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+}
+
+:root.light {
+  /* Explicit Light Mode Override */
+  --background: #ffffff;
+  --foreground: #1f2937;
+
+  --primary: #0066cc;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f1f5f9;
+  --secondary-foreground: #1f2937;
+
+  --accent: #ff6b35;
+  --accent-foreground: #ffffff;
+
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0066cc;
+
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
 }
 
 @theme inline {

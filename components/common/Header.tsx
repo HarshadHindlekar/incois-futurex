@@ -24,7 +24,7 @@ import {
   User,
   LogOut,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -61,6 +61,16 @@ export function Header({ alertCount = 0 }: HeaderProps) {
   const [isDark, setIsDark] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+    const shouldDark = stored ? stored === "dark" : Boolean(prefersDark);
+    document.documentElement.classList.toggle("dark", shouldDark);
+    document.documentElement.classList.toggle("light", !shouldDark);
+    setIsDark(shouldDark);
+  }, []);
+
   const setLanguage = (nextLocale: string) => {
     if (nextLocale === locale) return;
     document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
@@ -68,8 +78,11 @@ export function Header({ alertCount = 0 }: HeaderProps) {
   };
 
   const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle("dark");
+    const nextIsDark = !document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", nextIsDark);
+    document.documentElement.classList.toggle("light", !nextIsDark);
+    localStorage.setItem("theme", nextIsDark ? "dark" : "light");
+    setIsDark(nextIsDark);
   };
 
   return (
