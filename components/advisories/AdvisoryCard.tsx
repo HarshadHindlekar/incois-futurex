@@ -65,7 +65,7 @@ export function AdvisoryCard({
         return;
       }
 
-      const center = advisory.zones[0]
+      const center: [number, number] = advisory.zones[0]
         ? [advisory.zones[0].coordinates.longitude, advisory.zones[0].coordinates.latitude]
         : [78, 15];
 
