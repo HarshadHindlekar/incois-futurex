@@ -36,6 +36,7 @@ const severityFilters: { value: AlertSeverity | "ALL"; label: string }[] = [
 export default function AlertsPage() {
   const [severityFilter, setSeverityFilter] = useState<AlertSeverity | "ALL">("ALL");
   const [dismissedAlerts, setDismissedAlerts] = useState<string[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { alerts, isLoading, mutate } = useAlerts(
     severityFilter !== "ALL" ? { severity: severityFilter } : undefined
@@ -72,9 +73,21 @@ export default function AlertsPage() {
               {criticalCount} Critical
             </Badge>
           )}
-          <Button variant="outline" onClick={() => mutate()}>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Refresh
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={async () => {
+              setIsRefreshing(true);
+              try {
+                await mutate();
+              } finally {
+                setIsRefreshing(false);
+              }
+            }}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+            {isRefreshing ? "Refreshing..." : "Refresh"}
           </Button>
         </div>
       </div>

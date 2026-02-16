@@ -36,6 +36,8 @@ const sectors: { value: Sector | "ALL"; label: string }[] = [
 export default function AdvisoriesPage() {
   const [selectedSector, setSelectedSector] = useState<Sector | "ALL">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const { advisories, isLoading, mutate } = usePFZAdvisories(
     selectedSector !== "ALL" ? { sector: selectedSector } : undefined
@@ -70,13 +72,37 @@ export default function AdvisoriesPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => mutate()}>
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Refresh
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={async () => {
+              setIsRefreshing(true);
+              try {
+                await mutate();
+              } finally {
+                setIsRefreshing(false);
+              }
+            }}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+            {isRefreshing ? "Refreshing..." : "Refresh"}
           </Button>
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            Export
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={async () => {
+              setIsExporting(true);
+              try {
+                await new Promise((resolve) => setTimeout(resolve, 1200));
+              } finally {
+                setIsExporting(false);
+              }
+            }}
+            disabled={isExporting}
+          >
+            <Download className={`h-4 w-4 ${isExporting ? "animate-bounce" : ""}`} />
+            {isExporting ? "Exporting..." : "Export"}
           </Button>
         </div>
       </div>

@@ -153,7 +153,7 @@ export function Header({ alertCount = 0 }: HeaderProps) {
               {alertCount > 0 && (
                 <Badge
                   variant="destructive"
-                  className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs"
+                  className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] leading-none"
                 >
                   {alertCount > 9 ? "9+" : alertCount}
                 </Badge>
