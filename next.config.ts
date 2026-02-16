@@ -3,10 +3,13 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
+const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
+const basePath = isGitHubPages ? "/incois-futurex" : "";
+
 const nextConfig: NextConfig = {
   output: "export",
-  basePath: "/incois-futurex", // Replace with your repository name
-  assetPrefix: "/incois-futurex", // Replace with your repository name
+  basePath,
+  assetPrefix: basePath,
   images: {
     unoptimized: true,
     remotePatterns: [
