@@ -4,7 +4,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  output: "export",
+  basePath: "/incois-futurex", // Replace with your repository name
+  assetPrefix: "/incois-futurex", // Replace with your repository name
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
@@ -15,6 +19,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "recharts"],
   },
+  
 };
 
 export default withNextIntl(nextConfig);
