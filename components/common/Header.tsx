@@ -26,8 +26,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useAppLocale } from "@/components/i18n/ClientIntlProvider";
 
 const languages = [
   { code: "en", name: "English" },
@@ -56,8 +56,7 @@ interface HeaderProps {
 export function Header({ alertCount = 0 }: HeaderProps) {
   const pathname = usePathname();
   const t = useTranslations();
-  const locale = useLocale();
-  const router = useRouter();
+  const { locale, setLocale } = useAppLocale();
   const [isDark, setIsDark] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -73,8 +72,7 @@ export function Header({ alertCount = 0 }: HeaderProps) {
 
   const setLanguage = (nextLocale: string) => {
     if (nextLocale === locale) return;
-    document.cookie = `NEXT_LOCALE=${nextLocale}; path=/; max-age=31536000; SameSite=Lax`;
-    window.location.reload();
+    setLocale(nextLocale as typeof locale);
   };
 
   const toggleTheme = () => {

@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { Header } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,9 +42,9 @@ const sectors = [
   "LAKSHADWEEP",
 ] as const;
 
-export default async function Home() {
-  const t = await getTranslations("home");
-  const tSectors = await getTranslations("sectors");
+export default function Home() {
+  const t = useTranslations("home");
+  const tSectors = useTranslations("sectors");
 
   return (
     <div className="min-h-screen bg-background">
