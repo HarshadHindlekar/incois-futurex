@@ -1,17 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { fetchPFZAdvisories } from "@/lib/api/pfzService";
-import type { Sector, Language } from "@/lib/types";
+import type { Language } from "@/lib/types";
 
-export async function GET(request: NextRequest) {
+export const dynamic = "force-static";
+export const revalidate = 21600;
+
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const sector = searchParams.get("sector") as Sector | null;
-    const date = searchParams.get("date");
-    const language = (searchParams.get("lang") || "en") as Language;
+    const language = "en" as Language;
 
     const response = await fetchPFZAdvisories({
-      sector: sector || undefined,
-      date: date || undefined,
+      sector: undefined,
+      date: undefined,
       language,
     });
 

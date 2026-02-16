@@ -1,5 +1,4 @@
 import { getRequestConfig } from "next-intl/server";
-import { cookies, headers } from "next/headers";
 
 export const locales = [
   "en",
@@ -31,33 +30,8 @@ export const localeNames: Record<Locale, string> = {
 
 export const defaultLocale: Locale = "en";
 
-async function getLocale(): Promise<Locale> {
-  const cookieStore = await cookies();
-  const localeCookie = cookieStore.get("NEXT_LOCALE")?.value;
-
-  if (localeCookie && locales.includes(localeCookie as Locale)) {
-    return localeCookie as Locale;
-  }
-
-  const headersList = await headers();
-  const acceptLanguage = headersList.get("accept-language");
-
-  if (acceptLanguage) {
-    const preferredLocale = acceptLanguage
-      .split(",")
-      .map((lang) => lang.split(";")[0].trim().substring(0, 2))
-      .find((lang) => locales.includes(lang as Locale));
-
-    if (preferredLocale) {
-      return preferredLocale as Locale;
-    }
-  }
-
-  return defaultLocale;
-}
-
 export default getRequestConfig(async () => {
-  const locale = await getLocale();
+  const locale = defaultLocale;
 
   return {
     locale,

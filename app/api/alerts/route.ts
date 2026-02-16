@@ -1,29 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { fetchAlerts, fetchClimateIndices } from "@/lib/api/alertsService";
-import type { AlertSeverity, AlertType, Sector } from "@/lib/types";
 
-export async function GET(request: NextRequest) {
+export const dynamic = "force-static";
+export const revalidate = 300;
+
+export async function GET() {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const type = searchParams.get("type") || "alerts";
-    const severity = searchParams.get("severity") as AlertSeverity | null;
-    const alertType = searchParams.get("alertType") as AlertType | null;
-    const sector = searchParams.get("sector") as Sector | null;
-
-    if (type === "climate") {
-      const response = await fetchClimateIndices();
-      return NextResponse.json(response, {
-        headers: {
-          "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=172800",
-        },
-      });
-    }
-
-    const response = await fetchAlerts({
-      severity: severity || undefined,
-      type: alertType || undefined,
-      sector: sector || undefined,
-    });
+    const response = await fetchAlerts();
 
     if (!response.success) {
       return NextResponse.json(
